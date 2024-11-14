@@ -3,82 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Feedback Form</title>
+    <title>Feedback Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Teacher Feedback Form</h1>
+    <div class="container">
+        <h1>Feedback Form</h1>
+        <!-- Form that submits to Netlify Forms -->
+        <form name="feedback-form" method="POST" data-netlify="true">
+            <!-- Hidden field to enable Netlify Forms -->
+            <input type="hidden" name="form-name" value="feedback-form">
 
-    <!-- Netlify Form -->
-    <form name="teacher-feedback-form" method="POST" data-netlify="true" id="feedback-form">
-        <!-- Hidden field for form name -->
-        <input type="hidden" name="form-name" value="teacher-feedback-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
 
-        <!-- Student Information Section -->
-        <label for="name">Student Name:</label>
-        <input type="text" id="name" name="name" required><br>
+            <label for="feedback">Your Feedback:</label>
+            <textarea id="feedback" name="feedback" rows="4" required></textarea>
 
-        <label for="studentId">Student ID:</label>
-        <input type="text" id="studentId" name="studentId" required><br>
-
-        <h3>Teacher Evaluation</h3>
-        
-        <!-- Teacher Evaluation Section -->
-        <label for="teacher">Teacher's Name:</label>
-        <input type="text" id="teacher" name="teacher" required><br>
-
-        <label for="rating">Rating:</label>
-        <select name="rating" id="rating" required>
-            <option value="1">1 - Poor</option>
-            <option value="2">2 - Fair</option>
-            <option value="3">3 - Good</option>
-            <option value="4">4 - Very Good</option>
-            <option value="5">5 - Excellent</option>
-        </select><br>
-
-        <label for="comments">Comments:</label>
-        <textarea id="comments" name="comments" rows="4" cols="50"></textarea><br>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <p id="confirmation-message" style="display:none;">Thank you for your feedback! Your response has been recorded.</p>
-
-    <script>
-        // Handle form submission and confirmation message
-        const form = document.querySelector('#feedback-form');
-        const confirmationMessage = document.getElementById('confirmation-message');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Validate if the student has already submitted
-            const studentId = document.querySelector('#studentId').value;
-            const formData = new FormData(form);
-
-            // Prevent multiple submissions
-            fetch('/.netlify/functions/check-submission', {
-                method: 'POST',
-                body: JSON.stringify({ studentId: studentId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.submitted) {
-                    alert("You have already submitted your feedback.");
-                } else {
-                    // Proceed with form submission to Netlify
-                    fetch('/', {
-                        method: 'POST',
-                        body: formData,
-                    })
-                    .then(() => {
-                        confirmationMessage.style.display = 'block'; // Show confirmation
-                        form.reset(); // Reset the form
-                    })
-                    .catch((error) => alert('Error submitting form: ' + error));
-                }
-            })
-            .catch((error) => alert('Error checking submission: ' + error));
-        });
-    </script>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
