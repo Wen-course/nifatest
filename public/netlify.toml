@@ -1,0 +1,10 @@
+[build]
+  publish = "public"
+  functions = "functions"
+  command = "npm run build"  # 如果你使用的是构建工具，如 React 或 Vue
+
+[[redirects]]
+  from = "/teacher-feedback"
+  to = "/"
+  status = 200
+  force = true

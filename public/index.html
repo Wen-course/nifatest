@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师满意度调查</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin: 8px 0;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 8px 0 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button {
+            padding: 0.8rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>教师满意度调查</h1>
+</header>
+
+<div class="form-container">
+    <h2>请输入您的信息</h2>
+    <form id="student-info-form" onsubmit="fetchStudentCourses(event)">
+        <p>
+            <label for="studentName">学生姓名:</label>
+            <input type="text" id="studentName" name="studentName" required />
+        </p>
+        <p>
+            <label for="studentId">学生学号:</label>
+            <input type="text" id="studentId" name="studentId" required />
+        </p>
+        <p class="error" id="error-message"></p>
+        <button type="submit">获取课程和老师信息</button>
+    </form>
+</div>
+
+<div id="courses-container" class="form-container" style="display: none;">
+    <h2>教师评价</h2>
+    <form name="teacher-feedback" method="POST" data-netlify="true">
+        <div id="courses-list"></div>
+        <!-- 隐藏字段防止机器人提交 -->
+        <input type="hidden" name="form-name" value="teacher-feedback" />
+        <button type="submit">提交反馈</button>
+    </form>
+</div>
+
+<script>
+    // 模拟数据库：学生姓名和学号（实际应该从数据库获取）
+    const studentDatabase = {
+        "20230001": { name: "张三", courses: [
+            { course: "计算机科学", teacher: "张老师" },
+            { course: "数学", teacher: "李老师" },
+        ] },
+        "20230002": { name: "李四", courses: [
+            { course: "物理", teacher: "王老师" },
+            { course: "化学", teacher: "赵老师" },
+        ] }
+    };
+
+    // 模拟检查是否已经提交过
+    const submittedStudents = [];
+
+    function fetchStudentCourses(event) {
+        event.preventDefault();
+        const studentId = document.getElementById("studentId").value;
+        const studentName = document.getElementById("studentName").value;
+        const errorMessage = document.getElementById("error-message");
+
+        // 清除错误信息
+        errorMessage.textContent = "";
+
+        // 验证学号和姓名
+        if (!studentDatabase[studentId] || studentDatabase[studentId].name !== studentName) {
+            errorMessage.textContent = "学号或姓名不匹配，请重新输入。";
+            return;
+        }
+
+        // 检查该学生是否已经提交过反馈
+        if (submittedStudents.includes(studentId)) {
+            errorMessage.textContent = "您已经提交过反馈，无法再次提交。";
+            return;
+        }
+
+        const courses = studentDatabase[studentId].courses;
+        // 隐藏学生信息表单，显示课程和教师评价表单
+        document.getElementById("student-info-form").style.display = "none";
+        const coursesListDiv = document.getElementById("courses-list");
+        coursesListDiv.innerHTML = ''; // 清空之前的内容
+
+        // 为每个课程和老师生成评分字段
+        courses.forEach(courseInfo => {
+            const courseDiv = document.createElement("div");
+            courseDiv.innerHTML = `
+                <h3>${courseInfo.course} - ${courseInfo.teacher}</h3>
+                <label for="rating-${courseInfo.teacher}">评分 (1-5):</label>
+                <input type="number" name="ratings[${courseInfo.teacher}]" min="1" max="5" required />
+                <label for="comment-${courseInfo.teacher}">反馈:</label>
+                <textarea name="comments[${courseInfo.teacher}]"></textarea>
+            `;
+            coursesListDiv.appendChild(courseDiv);
+        });
+
+        // 显示评价表单
+        document.getElementById("courses-container").style.display = "block";
+    }
+
+    // 监听提交事件，保存学号已提交的学生
+    document.querySelector("form[name='teacher-feedback']").addEventListener('submit', function() {
+        const studentId = document.getElementById("studentId").value;
+        submittedStudents.push(studentId); // 将已提交的学生学号添加到已提交列表
+    });
+</script>
+
+</body>
+</html>
