@@ -54,38 +54,27 @@
   <h1>学生满意度调查</h1>
   
   <!-- Netlify Form -->
-  <form name="survey" method="POST" data-netlify="true">
-    <label for="name">姓名</label>
-    <input type="text" id="name" name="name" required>
-
-    <label for="teacher">选择老师</label>
-    <select id="teacher" name="teacher" required>
-      <option value="老师 A">老师 A</option>
-      <option value="老师 B">老师 B</option>
-      <option value="老师 C">老师 C</option>
-    </select>
-
-    <label for="course">选择课程</label>
-    <select id="course" name="course" required>
-      <option value="课程 1">课程 1</option>
-      <option value="课程 2">课程 2</option>
-      <option value="课程 3">课程 3</option>
-    </select>
-
-    <label for="rating">满意度评分 (1-5)</label>
-    <select id="rating" name="rating" required>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
-
-    <label for="comments">意见或建议</label>
-    <textarea id="comments" name="comments"></textarea>
-
-    <button type="submit">提交</button>
+  <form name="contact" method="POST" netlify>
+    <p>
+      <label>Your Name: <input type="text" name="name" /></label>
+    </p>
+    <p>
+      <label>Your Email: <input type="email" name="email" /></label>
+    </p>
+    <p>
+      <label>Your Role: <select name="role[]" multiple>
+        <option value="leader">Leader</option>
+        <option value="follower">Follower</option>
+      </select></label>
+    </p>
+    <p>
+      <label>Message: <textarea name="message"></textarea></label>
+    </p>
+    <p>
+      <button type="submit">Send</button>
+    </p>
   </form>
+  
 
 </body>
 </html>
